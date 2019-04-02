@@ -2,7 +2,7 @@
 This repository contains a custom R script to plot Circos plots using Circlize to identify synteny between linkage groups and chromosomes in a reference genome
 
 If you use/adapt any of this script please cite this repository: 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2622007.svg)](https://doi.org/10.5281/zenodo.2622007)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2622015.svg)](https://doi.org/10.5281/zenodo.2622015)
 
 The script is: LinkageMap_Chromosome_Syntey_circosplot.R
 
