@@ -8,10 +8,10 @@ The script is: LinkageMap_Chromosome_Syntey_circosplot.R
 
 Input files are:
 1. FalconChromosomeLengths.txt
-the lengths of fasta headings and 40 chromosome sequences
+- the lengths of fasta headings and 40 chromosome sequences
 
 2. LM_stats.csv
-summarised from De-Kayne and Feulner 2018 including linkage group names and lengths (cM)
+- summarised from De-Kayne and Feulner 2018 including linkage group names and lengths (cM)
 
 3. SA_linkagemap_FalconPhaseMapped_Filtered.csv
-a modified sam file from mapping linkage map markers to the reference genome
+- a modified sam file from mapping linkage map markers to the reference genome
