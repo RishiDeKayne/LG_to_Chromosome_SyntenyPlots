@@ -5,8 +5,7 @@
 #three input files are needed: 
 # 1. FalconChromosomeLenghts.txt - a list of chromosome lengths 
 #       - in my case this included the lengths of the fasta headings (all < 50) followed by the # bases in the chromosome fasta line
-
-#e.g. 
+# 1. e.g. 
 #45
 #111295376
 #45
@@ -17,8 +16,7 @@
 #92930148
 
 # 2. LM_stats.txt - a summary statstics table of the linkage (taken from Table 1: http://www.g3journal.org/content/8/12/3745.figures-only)
-
-#e.g. 
+# 2. e.g. 
 #Calb01 253 75.96 0.30 91.07 0.36 63.67 0.25 Ssa01 W02 1.43
 #Calb02 228 83.57 0.37 101.33 0.44 69.58 0.31 Ssa01 W03 1.46
 #Calb03 220 78.51 0.36 84.40 0.38 87.95 0.40 Ssa21 W32 0.96
@@ -27,12 +25,11 @@
 #       - bsub -n10 -W 4:00 -R "rusage[mem=3000]" "module load java gdc bwa/0.7.17; bwa mem -t 10 module load java gdc bwa/0.7.17; bwa mem -t 10 chromosome_level_assembly.fasta SpeciesAveragedLinkageMap.fasta > SA_linkagemap_FalconPhaseMapped.sam"
 #       - awk '{ if($5 > 30) {print}}' SA_linkagemap_FalconPhaseMapped.sam > SA_linkagemap_FalconPhaseMapped_Filtered.txt
 
-#       - this was then checked over and the columns with markers were split into rad locus id and linkage group and the mapping location separated by scaffold number and bp location e.g. - check columns fit the example carefully - it is not just sam output!
-
-#e.g.
-#X.PG	X	X.1	ID.bwa	PN.bwa	X.2	VN.0.7.17.r1188	CL.bwa	mem	X.NAME.	X10	X.cluster.project.gdc.shared.p298.Rishi.PostPhaseScaffoldingGenomes.WF_Canu.chr.fasta	X.cluster.project.gdc.shared.p298.Rishi.LinkageMap.SpeciesAveragedMap.fasta	X.3	X.4	X.5	X.6	X.7
-#consensus_42108	SA10	0	0	PGA	scaffold21	16735146	60	90M	*	0	0	CACTCTCTCTCCTTCTCCCTCCTTTCCTCTCTATGTCCCAGAAAGCCTTCAAAGATGACCCGCAGAGCAGAGCGGTGGTATGATCCTGCA	*	NM:i:0	MD:Z:90	AS:i:90	XS:i:21
-#consensus_27024	SA10	2.3	0	PGA	scaffold21	6158036	60	90M	*	0	0	TGCAGGGTTCAAATGCAACCACTTGGGCAGCCTGGTCTCATAGGCTTGACGTAACATAGAAAATGTAAATCTGGGACACTCAAATTAGTA	*	NM:i:0	MD:Z:90	AS:i:90	XS:i:23
+#       - this was then checked over and the column with mapping location separated by scaffold number and bp location e.g. - check columns in test file carefully
+#@PG			ID:bwa	PN:bwa		VN:0.7.17-r1188	CL:bwa	mem	#NAME?	10	/cluster/project/gdc/shared/p298/Rishi/PostPhaseScaffoldingGenomes/WF_Canu.chr.fasta	/cluster/project/gdc/shared/p298/Rishi/LinkageMap/SpeciesAveragedMap.fasta						
+#consensus_42108	SA10	0	0	PGA	scaffold21	16735146	60	90M	*	0	0	CACTCTCTCTCCTTCTCCCTCCTTTCCTCTCTATGTCCCAGAAAGCCTTCAAAGATGACCCGCAGAGCAGAGCGGTGGTATGATCCTGCA	*	NM:i:0	MD:Z:90	AS:i:90	XS:i:21	
+#consensus_27024	SA10	2.3	0	PGA	scaffold21	6158036	60	90M	*	0	0	TGCAGGGTTCAAATGCAACCACTTGGGCAGCCTGGTCTCATAGGCTTGACGTAACATAGAAAATGTAAATCTGGGACACTCAAATTAGTA	*	NM:i:0	MD:Z:90	AS:i:90	XS:i:23	
+#consensus_7502	SA10	2.63	16	PGA	scaffold21	26075329	60	90M	*	0	0	GCAGCTGCTGCTTGTGGGCCTCCTTAATTGCTTGCAGCTGGCGTTGGAGCAGCAGCTCTGATCTCAGGCCATCCTCCAGGAAAGCCTGCA	*	NM:i:1	MD:Z:25C64	AS:i:85	XS:i:20	
 
 #for extra information about plotting check out the circlize manual: https://jokergoo.github.io/circlize_book/book/ 
 
@@ -46,16 +43,16 @@
 library(circlize)
 
 #load in chromosome lengths and linkage map lengths
-setwd("~/Dropbox/RishiMAC/GitHub/LinkageMap_Chromosomes_Synteny")
+setwd("~/GitHub/LG_to_Chromosome_SyntenyPlots/")
 #make df with chromosome lengths
-lengthsdf <- read.csv(file = "FalconChromosomeLenghts.txt", header = FALSE)
+lengthsdf <- read.csv(file = "FalconChromosomeLengths.txt", header = FALSE)
 #remove header values so we are left in our case with 40 lines with the number of bp
 lengthsdf <- subset(lengthsdf, lengthsdf$V1 > 50)
 #add scaffold number to length df - these start from 0 since our scaffolds are numbered that way 
 lengthsdf$Scaffold <- 0:39
 
 #now read in linkage map statistics
-lm <- read.csv(file = "LM_stats.txt", header = FALSE, sep = " ")
+lm <- read.csv(file = "LM_stats.csv", header = FALSE, sep = ",")
 
 #load in samfile already separated columns in excel - DOUBLE CHECK THE FORMAT HERE!
 samfile <- read.csv(file = "SA_linkagemap_FalconPhaseMapped_Filtered.csv")
@@ -111,7 +108,7 @@ lg_dat <- lg_dat[order(lg_dat$`lm$V1`),]
 chrom_order_df <- unique(lm$scaffold) 
 chrom_order_df
 
-########
+###••••••••#####
 #check lm$scaffold manually - some scaffolds will be missing! you need to add these manually below
 #they are likely not that key since they will have few markers mapping to them but should be included
 missing <- c("scaffold6", "scaffold7","scaffold34", "scaffold37", "scaffold38", "scaffold39")
@@ -238,12 +235,18 @@ for (row in 1:(nrow(linkfile))){
 #this second part of this script will change the scaffold order so the circos plot is easier to read
 
 #load in chromosome lengths and linkage map lengths
-lengthsdf <- read.csv(file = "FalconChromosomeLenghts.txt", header = FALSE)
+setwd("~/Dropbox/RishiMAC/GitHub/LinkageMap_Chromosomes_Synteny_RICARDO/")
+#make df with chromosome lengths
+lengthsdf <- read.csv(file = "FalconChromosomeLengths.txt", header = FALSE)
+#remove header values so we are left in our case with 40 lines with the number of bp
 lengthsdf <- subset(lengthsdf, lengthsdf$V1 > 50)
-lm <- read.csv(file = "LM_stats.txt", header = FALSE, sep = " ")
+#add scaffold number to length df - these start from 0 since our scaffolds are numbered that way 
 lengthsdf$Scaffold <- 0:39
 
-#load in samfile already separated columns in excel...
+#now read in linkage map statistics
+lm <- read.csv(file = "LM_stats.csv", header = FALSE, sep = ",")
+
+#load in samfile already separated columns in excel - DOUBLE CHECK THE FORMAT HERE!
 samfile <- read.csv(file = "SA_linkagemap_FalconPhaseMapped_Filtered.csv")
 samfile <- subset(samfile, as.character(samfile$PN.bwa) == "PGA")
 
