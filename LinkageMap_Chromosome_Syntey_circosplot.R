@@ -235,7 +235,6 @@ for (row in 1:(nrow(linkfile))){
 #this second part of this script will change the scaffold order so the circos plot is easier to read
 
 #load in chromosome lengths and linkage map lengths
-setwd("~/Dropbox/RishiMAC/GitHub/LinkageMap_Chromosomes_Synteny_RICARDO/")
 #make df with chromosome lengths
 lengthsdf <- read.csv(file = "FalconChromosomeLengths.txt", header = FALSE)
 #remove header values so we are left in our case with 40 lines with the number of bp
